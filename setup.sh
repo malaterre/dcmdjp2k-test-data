@@ -65,8 +65,12 @@ done
 mv valids/US1_GDCM_ybr_REV_MCT1.dcm invalids
 mv valids/US1_GDCM_ybr_IRR_MCT1.dcm invalids
 
-# craft fake lossless (YBR_ICT implies lossy)
-for f in US1_GDCM_rgb_IRR_MCT1.dcm US1_IRR_MCT1.dcm; do
+# craft fake lossless :
+for f in US1_GDCM_rgb_IRR_MCT1.dcm US1_IRR_MCT1.dcm US1_GDCM_rgb_IRR_MCT0.dcm US1_GDCM_ybr_IRR_MCT0.dcm; do
   sed -e 's/1.2.840.10008.1.2.4.91/1.2.840.10008.1.2.4.90/' valids/$f > invalids/FakeLossless_$f;
 done
 
+# MONOCHROME1 / MONOCHROME2
+for f in XA1_J2KI RG1_J2KI; do
+  sed -e 's/1.2.840.10008.1.2.4.91/1.2.840.10008.1.2.4.90/' template/IMAGES/J2KI/$f > invalids/FakeLossless_$f.dcm
+done

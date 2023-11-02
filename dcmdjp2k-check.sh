@@ -16,3 +16,5 @@ for i in invalids/*.dcm; do
     exit 1
   fi
 done
+
+echo "SUCCESS"
