@@ -44,6 +44,7 @@ for irr in 'R' 'I'; do
          pi="--pi YBR_FULL"
          ;;
       esac
+      # YBR_FULL / MCT=1 is illegal will re-shuffle later
       gdcmimg $pi --template /tmp/$color.dcm -i "/tmp/template.$color$irrext.mct$mct.j2k" -o "valids/US1_GDCM_${color}_${acro}_MCT$mct.dcm"
     done
   done
@@ -52,6 +53,20 @@ done
 md5sum /tmp/template.*.j2k
 
 mkdir -p invalids
-sed -e 's/1.2.840.10008.1.2.4.91/1.2.840.10008.1.2.4.90/' template/IMAGES/J2KI/US1_J2KI > invalids/US1_IRR_MCT1_Lossless.dcm
 
+# No other Value of Photometric Interpretation than YBR_RCT or YBR_ICT is
+# permitted when SGcod Multiple component transformation type is 1.
+# RGB
+for f in US1_GDCM_rgb_IRR_MCT1.dcm US1_GDCM_rgb_REV_MCT1.dcm; do
+  cp valids/$f invalids/$f;
+  dcmodify --no-backup -m 0028,0004=RGB invalids/$f
+done
+# YBR_FULL / re-shuffle previously generated:
+mv valids/US1_GDCM_ybr_REV_MCT1.dcm invalids
+mv valids/US1_GDCM_ybr_IRR_MCT1.dcm invalids
+
+# craft fake lossless (YBR_ICT implies lossy)
+for f in US1_GDCM_rgb_IRR_MCT1.dcm US1_IRR_MCT1.dcm; do
+  sed -e 's/1.2.840.10008.1.2.4.91/1.2.840.10008.1.2.4.90/' valids/$f > invalids/FakeLossless_$f;
+done
 
