@@ -13,7 +13,7 @@ cp template/IMAGES/J2KI/US1_J2KI valids/US1_IRR_MCT1.dcm
 gdcmraw template/IMAGES/J2KR/US1_J2KR /tmp/template.rgb.j2k
 opj_decompress -quiet -i /tmp/template.rgb.j2k -o /tmp/template.rgb.pnm
 
-gdcmconv --raw template/IMAGES/J2KR/US1_J2KR /tmp/raw.dcm
+gdcmconv --raw template/IMAGES/J2KR/US1_J2KR /tmp/rgb.dcm
 gdcmconv --photometric-interpretation YBR_FULL /tmp/raw.dcm /tmp/ybr.dcm
 gdcmconv --j2k /tmp/ybr.dcm /tmp/ybr.j2k.dcm
 gdcmraw /tmp/ybr.j2k.dcm /tmp/template.ybr.j2k
@@ -36,7 +36,15 @@ for irr in 'R' 'I'; do
     for color in 'rgb' 'ybr'; do
       # define an empty COM:
       opj_compress -C '' $irropt -mct "$mct" -i /tmp/template.$color.pnm -o "/tmp/template.$color$irrext.mct$mct.j2k" > /dev/null
-      gdcmimg --template template/IMAGES/J2KR/US1_J2KR -i "/tmp/template.$color$irrext.mct$mct.j2k" -o "valids/US1_GDCM_${color}_${acro}_MCT$mct.dcm"
+      case $color in
+        rgb)
+         pi=
+         ;;
+       ybr)
+         pi="--pi YBR_FULL"
+         ;;
+      esac
+      gdcmimg $pi --template /tmp/$color.dcm -i "/tmp/template.$color$irrext.mct$mct.j2k" -o "valids/US1_GDCM_${color}_${acro}_MCT$mct.dcm"
     done
   done
 done
