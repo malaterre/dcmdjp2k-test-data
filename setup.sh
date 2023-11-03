@@ -14,7 +14,7 @@ gdcmraw template/IMAGES/J2KR/US1_J2KR /tmp/template.rgb.j2k
 opj_decompress -quiet -i /tmp/template.rgb.j2k -o /tmp/template.rgb.pnm
 
 gdcmconv --raw template/IMAGES/J2KR/US1_J2KR /tmp/rgb.dcm
-gdcmconv --photometric-interpretation YBR_FULL /tmp/raw.dcm /tmp/ybr.dcm
+gdcmconv --photometric-interpretation YBR_FULL /tmp/rgb.dcm /tmp/ybr.dcm
 gdcmconv --j2k /tmp/ybr.dcm /tmp/ybr.j2k.dcm
 gdcmraw /tmp/ybr.j2k.dcm /tmp/template.ybr.j2k
 opj_decompress -quiet -i /tmp/template.ybr.j2k -o /tmp/template.ybr.pnm
